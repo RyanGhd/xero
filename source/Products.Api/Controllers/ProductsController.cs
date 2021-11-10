@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Products.Api.Data;
 using Products.Api.Models;
 
 namespace Products.Api.Controllers
@@ -9,20 +10,29 @@ namespace Products.Api.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public Task<IActionResult> GetAsync()
+        private readonly IProductRepository _productRepository;
+
+        public ProductsController(IProductRepository productRepository)
         {
-            return Task.FromResult((IActionResult)new OkObjectResult(new Models.Products()));
+            _productRepository = productRepository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            var result = await _productRepository.GetAsync();
+
+            return new OkObjectResult(result);
         }
 
         [HttpGet("{id}")]
-        public Product Get(Guid id)
+        public async Task<IActionResult> GetAsync(Guid id)
         {
-            var product = new Product(id);
-            if (product.IsNew)
-                throw new Exception();
+            var result = await _productRepository.GetAsync(id);
+            if (result == null)
+                return new NotFoundObjectResult(new NotFoundErrorResponse(nameof(Product), HttpContext.TraceIdentifier));
 
-            return product;
+            return new OkObjectResult(result);
         }
 
         [HttpPost]

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Products.Api.Data;
 
 namespace Products.Api
 {
@@ -31,6 +32,10 @@ namespace Products.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Products.Api", Version = "v1" });
             });
+
+            //register services
+            services.AddSingleton<IProductRepository, ProductRepository>();
+            services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
