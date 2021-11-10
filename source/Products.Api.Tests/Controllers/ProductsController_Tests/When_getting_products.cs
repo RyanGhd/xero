@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Products.Api.TestFacilities;
 using Xunit;
 // ReSharper disable InconsistentNaming
@@ -18,10 +19,12 @@ namespace Products.Api.Controllers.ProductsController_Tests
             var sut = _fixture.Start().Build();
 
             // act 
-            var result = sut.Get();
+            var result = (OkObjectResult)await sut.GetAsync();
+            var products = (Models.Products)result.Value;
 
             // assert
-            Assert.True(result.Items.Any());
+            Assert.Equal(200, result.StatusCode);
+            Assert.True(products.Items.Any());
         }
     }
 }

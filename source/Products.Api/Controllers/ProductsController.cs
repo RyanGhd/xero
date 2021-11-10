@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Products.Api.Models;
 
@@ -9,9 +10,9 @@ namespace Products.Api.Controllers
     public class ProductsController : ControllerBase
     {
         [HttpGet]
-        public Models.Products Get()
+        public Task<IActionResult> GetAsync()
         {
-            return new Models.Products();
+            return Task.FromResult((IActionResult)new OkObjectResult(new Models.Products()));
         }
 
         [HttpGet("{id}")]
