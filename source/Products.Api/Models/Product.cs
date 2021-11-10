@@ -23,6 +23,11 @@ namespace Products.Api.Models
             IsNew = true;
         }
 
+        public void Save()
+        {
+            throw new Exception("must be removed");
+        }
+
         public Product(Guid id)
         {
             /*IsNew = true;
@@ -41,21 +46,7 @@ namespace Products.Api.Models
             Description = (DBNull.Value == rdr["Description"]) ? null : rdr["Description"].ToString();
             Price = decimal.Parse(rdr["Price"].ToString());
             DeliveryPrice = decimal.Parse(rdr["DeliveryPrice"].ToString());*/
-            throw new NotImplementedException();
-        }
-
-        public void Save()
-        {
-            var conn = Helpers.NewConnection();
-            conn.Open();
-            var cmd = conn.CreateCommand();
-
-            cmd.CommandText = IsNew
-                ? $"insert into Products (id, name, description, price, deliveryprice) values ('{Id}', '{Name}', '{Description}', {Price}, {DeliveryPrice})"
-                : $"update Products set name = '{Name}', description = '{Description}', price = {Price}, deliveryprice = {DeliveryPrice} where id = '{Id}' collate nocase";
-
-            conn.Open();
-            cmd.ExecuteNonQuery();
+            throw new Exception("must be removed");
         }
 
         public void Delete()

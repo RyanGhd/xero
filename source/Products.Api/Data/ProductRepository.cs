@@ -9,6 +9,7 @@ namespace Products.Api.Data
     {
         Task<Models.Products> GetAsync();
         Task<Models.Product> GetAsync(Guid Id);
+        Task AddAsync(Product product);
     }
 
     public class ProductRepository: IProductRepository
@@ -36,6 +37,22 @@ namespace Products.Api.Data
 
         public Task<Models.Product> GetAsync(Guid Id)
         {
+            throw new NotImplementedException();
+        }
+
+        public Task AddAsync(Product product)
+        { /*
+           var conn = Helpers.NewConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+
+            cmd.CommandText = IsNew
+                ? $"insert into Products (id, name, description, price, deliveryprice) values ('{Id}', '{Name}', '{Description}', {Price}, {DeliveryPrice})"
+                : $"update Products set name = '{Name}', description = '{Description}', price = {Price}, deliveryprice = {DeliveryPrice} where id = '{Id}' collate nocase";
+
+            conn.Open();
+            cmd.ExecuteNonQuery();
+           */
             throw new NotImplementedException();
         }
     }

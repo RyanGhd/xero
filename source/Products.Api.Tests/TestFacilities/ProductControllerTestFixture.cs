@@ -62,6 +62,11 @@ namespace Products.Api.TestFacilities
 
             return new Models.Products(new[] { p1, p2 });
         }
+
+        public Models.Product GetProduct()
+        {
+            return _productDtaBuilder.Start().Build();
+        }
     }
 }
 

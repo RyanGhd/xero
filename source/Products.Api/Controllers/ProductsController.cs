@@ -36,9 +36,11 @@ namespace Products.Api.Controllers
         }
 
         [HttpPost]
-        public void Post(Product product)
+        public async Task<IActionResult> PostAsync(Product product)
         {
-            product.Save();
+            await _productRepository.AddAsync(product);
+
+            return new OkResult();
         }
 
         [HttpPut("{id}")]
