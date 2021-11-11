@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Products.Api.Models;
 using Xunit;
+// ReSharper disable InconsistentNaming
 
 namespace Products.Api.Data
 {

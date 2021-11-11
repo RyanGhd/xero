@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -7,9 +7,9 @@
 
     <RootNamespace>Products.Api</RootNamespace>
 
-    <AssemblyVersion>1.0.0.73</AssemblyVersion>
+    <AssemblyVersion>1.0.0.88</AssemblyVersion>
 
-    <FileVersion>1.0.0.73</FileVersion>
+    <FileVersion>1.0.0.88</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,12 +34,6 @@
 
   <ItemGroup>
     <None Include="..\Products.Api\App_Data\products.db" Link="App_Data\products.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Products.Api\App_Data\products.db-shm" Link="App_Data\products.db-shm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Products.Api\App_Data\products.db-wal" Link="App_Data\products.db-wal">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

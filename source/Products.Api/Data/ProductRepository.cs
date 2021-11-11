@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Products.Api.Data.Entities;
+using Products.Api.Data.Mappers;
 using Products.Api.Models;
+using Products.Api.Models.Exceptions;
 
 namespace Products.Api.Data
 {
@@ -24,13 +28,21 @@ namespace Products.Api.Data
 
     public class ProductRepository : IProductRepository
     {
-        private const string ProductTable = "product";
+        private const string ProductTable = "Products";
+        private const string ProductOptionTable = "ProductOptions";
 
         private readonly IDbConnectionFactory _connectionFactory;
+        private readonly IProductToProductEntityMapper _productMapper;
+        private readonly IProductOptionToProductOptionEntityMapper _optionMapper;
 
-        public ProductRepository(IDbConnectionFactory connectionFactory)
+        public ProductRepository(
+            IDbConnectionFactory connectionFactory,
+            IProductToProductEntityMapper productMapper,
+            IProductOptionToProductOptionEntityMapper optionMapper)
         {
             _connectionFactory = connectionFactory;
+            _productMapper = productMapper;
+            _optionMapper = optionMapper;
         }
 
         public async Task<Models.Products> GetAsync()
@@ -39,53 +51,75 @@ namespace Products.Api.Data
 
             using (var conn = _connectionFactory.BuildConnection())
             {
-                var products = await conn.QueryAsync<Product>(sql);
+                var entities = await conn.QueryAsync<ProductEntity>(sql);
 
-                return new Models.Products(products);
+                var entityList = entities.ToList();
+
+                if (!entityList.Any())
+                    return null;
+
+                var models = entityList.Select(e => _productMapper.Map(e));
+
+                return new Models.Products(models);
             }
         }
 
-        public Task<Models.Product> GetAsync(Guid Id)
+        public async Task<Models.Product> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var sql = $@"SELECT * from {ProductTable} WHERE {nameof(ProductEntity.Id)}=@{nameof(id)} COLLATE NOCASE";
+
+            using (var conn = _connectionFactory.BuildConnection())
+            {
+                var entities = await conn.QueryAsync<ProductEntity>(sql, new { id });
+
+                var entity = entities.FirstOrDefault();
+
+                if (entity == null)
+                    return null;
+
+                return _productMapper.Map(entity);
+            }
         }
 
-        public Task<ProductOptions> GetOptionsAsync(Guid Id, string trackId)
+        public async Task<ProductOptions> GetOptionsAsync(Guid id, string trackId)
         {
-            /*Items = new List<ProductOption>();
-                        var conn = Helpers.NewConnection();
-                        conn.Open();
-                        var cmd = conn.CreateCommand();
+            var sql = $@"SELECT * from {ProductOptionTable} WHERE {nameof(ProductOptionEntity.ProductId)}=@{nameof(id)} COLLATE NOCASE";
 
-                        cmd.CommandText = $"select id from productoptions {where}";
+            using (var conn = _connectionFactory.BuildConnection())
+            {
+                var entities = await conn.QueryAsync<ProductOptionEntity>(sql, new { id });
 
-                        var rdr = cmd.ExecuteReader();
-                        while (rdr.Read())
-                        {
-                            var id = Guid.Parse(rdr.GetString(0));
-                            Items.Add(new ProductOption(id));
-                        }*/
-            throw new NotImplementedException();
+                var entityList = entities.ToList();
+
+                if (!entityList.Any())
+                    return null;
+
+                var models = entityList.Select(e => _optionMapper.Map(e));
+
+                return new ProductOptions(models);
+            }
         }
 
-        public Task<ProductOption> GetOptionAsync(Guid productId, Guid id, string trackId)
+        public async Task<ProductOption> GetOptionAsync(Guid productId, Guid id, string trackId)
         {
-            /*var conn = Helpers.NewConnection();
-            conn.Open();
-            var cmd = conn.CreateCommand();
+            var sql = $@"SELECT * from {ProductOptionTable} WHERE {nameof(ProductOptionEntity.Id)}=@{nameof(id)} COLLATE NOCASE";
 
-            cmd.CommandText = $"select * from productoptions where id = '{id}' collate nocase";
+            using (var conn = _connectionFactory.BuildConnection())
+            {
+                var entities = await conn.QueryAsync<ProductOptionEntity>(sql, new { id });
 
-            var rdr = cmd.ExecuteReader();
-            if (!rdr.Read())
-                return;
+                var entity = entities.FirstOrDefault();
 
-            Id = Guid.Parse(rdr["Id"].ToString());
-            ProductId = Guid.Parse(rdr["ProductId"].ToString());
-            Name = rdr["Name"].ToString();
-            Description = (DBNull.Value == rdr["Description"]) ? null : rdr["Description"].ToString();*/
+                if (entity == null)
+                    return null;
 
-            throw new NotImplementedException();
+                if (!entity.ProductId.Equals(productId.ToString(), StringComparison.InvariantCultureIgnoreCase))
+                    throw new BadRequestException($"An error occurred. Please review trackId [{trackId}] for more details", null, trackId);
+
+                var model = _optionMapper.Map(entity);
+
+                return model;
+            }
         }
 
         public Task AddAsync(Product product, string trackId)

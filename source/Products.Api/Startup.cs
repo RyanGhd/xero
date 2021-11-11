@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Products.Api.Data;
+using Products.Api.Data.Mappers;
 using Products.Api.Models;
 
 namespace Products.Api
@@ -38,6 +39,8 @@ namespace Products.Api
             //register services
             services.AddSingleton<IProductRepository, ProductRepository>();
             services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+            services.AddSingleton<IProductToProductEntityMapper, ProductToProductEntityMapper>();
+            services.AddSingleton<IProductOptionToProductOptionEntityMapper, ProductOptionToProductOptionEntityMapper>();
             services.AddSingleton<IAppSettings>(p=>new AppSettings(Configuration.GetSection("ConnectionString").Value));
         }
 
