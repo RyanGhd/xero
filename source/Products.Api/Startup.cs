@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Products.Api.Data;
+using Products.Api.Models;
 
 namespace Products.Api
 {
@@ -19,6 +20,7 @@ namespace Products.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -36,6 +38,7 @@ namespace Products.Api
             //register services
             services.AddSingleton<IProductRepository, ProductRepository>();
             services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+            services.AddSingleton<IAppSettings>(p=>new AppSettings(Configuration.GetSection("ConnectionString").Value));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
