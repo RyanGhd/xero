@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Products.Api.Models;
+using Products.Api.Models.Exceptions;
 using Products.Api.TestFacilities;
 using Xunit;
 
@@ -19,7 +20,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
         public async Task Service_returns_successful_response_If_there_is_no_product()
         {
             // arrange 
-            var sut = _fixture.Start().WithProducts(new Models.Products(new List<Product>())).Build();
+            var sut = _fixture.Start().WithSetupForGet(new Models.Products(new List<Product>())).Build();
 
             // act 
             var result = (OkObjectResult)await sut.GetAsync();
@@ -35,7 +36,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
         {
             // arrange 
             var inputProducts = _fixture.GetProducts();
-            var sut = _fixture.Start().WithProducts(inputProducts).Build();
+            var sut = _fixture.Start().WithSetupForGet(inputProducts).Build();
 
             // act 
             var result = (OkObjectResult)await sut.GetAsync();
@@ -47,6 +48,18 @@ namespace Products.Api.Controllers.ProductsController_Tests
             Assert.True(inputProducts.Items.All(ip => products.Items.Any(p => p.Id == ip.Id)));
         }
 
-       
+        [Fact]
+        public async Task Service_returns_400_if_an_error_happens()
+        {
+            // arrange 
+            var sut = _fixture.Start().WithSetupForGet(new BadRequestException("Error", null, "111")).Build();
+
+            // act
+            var result = (BadRequestObjectResult)await sut.GetAsync();
+
+            // assert
+            Assert.Equal(400, result.StatusCode);
+            Assert.NotNull(((ErrorResponse)result.Value).ErrorMessage);
+        }
     }
 }

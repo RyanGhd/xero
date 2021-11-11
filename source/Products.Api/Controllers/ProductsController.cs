@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Products.Api.Data;
 using Products.Api.Models;
+using Products.Api.Models.Exceptions;
 
 namespace Products.Api.Controllers
 {
@@ -20,33 +21,64 @@ namespace Products.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var result = await _productRepository.GetAsync();
+            try
+            {
+                var result = await _productRepository.GetAsync();
 
-            return new OkObjectResult(result);
+                return new OkObjectResult(result);
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(Guid id)
         {
-            var result = await _productRepository.GetAsync(id);
-            if (result == null)
-                return new NotFoundObjectResult(new NotFoundErrorResponse(nameof(Product), HttpContext.TraceIdentifier));
+            try
+            {
+                var result = await _productRepository.GetAsync(id);
+                if (result == null)
+                    return new BadRequestObjectResult(new ErrorResponse( HttpContext.TraceIdentifier));
 
-            return new OkObjectResult(result);
+                return new OkObjectResult(result);
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(Product product)
+        public async Task<IActionResult> PostAsync([FromBody] Product product)
         {
-            await _productRepository.AddAsync(product);
+            try
+            {
+                await _productRepository.AddAsync(product, HttpContext.TraceIdentifier);
 
-            return new OkResult();
+                return new OkResult();
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
 
         [HttpPut("{id}")]
-        public void Update(Guid id, Product product)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] Product product)
         {
-            var orig = new Product(id)
+            try
+            {
+                await _productRepository.UpdateAsync(id, product, HttpContext.TraceIdentifier);
+
+                return new OkResult();
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
+            /*var orig = new Product(id)
             {
                 Name = product.Name,
                 Description = product.Description,
@@ -56,6 +88,10 @@ namespace Products.Api.Controllers
 
             if (!orig.IsNew)
                 orig.Save();
+
+            await Task.FromResult(true);
+
+            return new OkResult();*/
         }
 
         [HttpDelete("{id}")]

@@ -9,10 +9,11 @@ namespace Products.Api.Data
     {
         Task<Models.Products> GetAsync();
         Task<Models.Product> GetAsync(Guid Id);
-        Task AddAsync(Product product);
+        Task AddAsync(Product product, string trackId);
+        Task UpdateAsync(Guid id, Product product, string trackId);
     }
 
-    public class ProductRepository: IProductRepository
+    public class ProductRepository : IProductRepository
     {
         private const string ProductTable = "product";
 
@@ -29,7 +30,7 @@ namespace Products.Api.Data
 
             using (var conn = _connectionFactory.BuildConnection())
             {
-                var products =await conn.QueryAsync<Product>(sql);
+                var products = await conn.QueryAsync<Product>(sql);
 
                 return new Models.Products(products);
             }
@@ -40,7 +41,7 @@ namespace Products.Api.Data
             throw new NotImplementedException();
         }
 
-        public Task AddAsync(Product product)
+        public Task AddAsync(Product product, string trackId)
         { /*
            var conn = Helpers.NewConnection();
             conn.Open();
@@ -53,6 +54,11 @@ namespace Products.Api.Data
             conn.Open();
             cmd.ExecuteNonQuery();
            */
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Guid id, Product product, string trackId)
+        {
             throw new NotImplementedException();
         }
     }

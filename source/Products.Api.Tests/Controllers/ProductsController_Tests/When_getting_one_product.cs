@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Products.Api.Models;
+using Products.Api.Models.Exceptions;
 using Products.Api.TestFacilities;
 using Xunit;
 
@@ -19,7 +20,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
             var inputProducts = _fixture.GetProducts();
             var inputProduct = inputProducts.Items.First();
 
-            var sut = _fixture.Start().WithProduct(inputProduct).Build();
+            var sut = _fixture.Start().WithSetupForGet(inputProduct).Build();
 
             // act 
             var result = (OkObjectResult)await sut.GetAsync(inputProduct.Id);
@@ -31,20 +32,33 @@ namespace Products.Api.Controllers.ProductsController_Tests
         }
 
         [Fact]
-        public async Task Service_returns_404_if_product_does_not_exist()
+        public async Task Service_returns_400_if_product_does_not_exist()
         {
             // arrange 
             var sut = _fixture.Start().WithNoProduct().Build();
 
             // act 
-            var result = (NotFoundObjectResult)await sut.GetAsync(Guid.NewGuid());
-            var error = (NotFoundErrorResponse)result.Value;
+            var result = (BadRequestObjectResult)await sut.GetAsync(Guid.NewGuid());
+            var error = (ErrorResponse)result.Value;
 
             // assert
-            Assert.Equal(404, result.StatusCode);
-            Assert.Equal("Product not found", error.ErrorMessage);
+            Assert.Equal(400, result.StatusCode);
+            Assert.NotNull(error.ErrorMessage);
             Assert.NotNull(error.TrackId);
+        }
 
+        [Fact]
+        public async Task Service_returns_400_if_an_error_happens()
+        {
+            // arrange 
+            var sut = _fixture.Start().WithSetupForGet(new BadRequestException("Error", null, "111")).Build();
+
+            // act
+            var result = (BadRequestObjectResult)await sut.GetAsync(Guid.NewGuid());
+
+            // assert
+            Assert.Equal(400, result.StatusCode);
+            Assert.NotNull(((ErrorResponse)result.Value).ErrorMessage);
         }
     }
 }
