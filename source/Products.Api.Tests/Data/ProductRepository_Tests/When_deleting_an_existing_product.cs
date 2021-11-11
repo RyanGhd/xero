@@ -2,18 +2,19 @@
 using System.Threading.Tasks;
 using Xunit;
 // ReSharper disable InconsistentNaming
+
 namespace Products.Api.Data.ProductRepository_Tests
 {
-    public class When_adding_new_product
+    public class When_deleting_an_existing_product
     {
         [Fact]
-        public Task Service_adds_new_product()
+        public Task Service_deletes_the_product()
         {
             throw new NotImplementedException();
         }
         
         [Fact]
-        public Task Service_throws_bad_request_if_the_product_already_exists()
+        public Task Service_throws_bad_request_exception_if_product_does_not_exist()
         {
             throw new NotImplementedException();
         }

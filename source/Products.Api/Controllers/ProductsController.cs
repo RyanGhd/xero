@@ -7,8 +7,7 @@ using Products.Api.Models.Exceptions;
 
 namespace Products.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("api/v1/[controller]")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
@@ -34,13 +33,13 @@ namespace Products.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(Guid id)
+        public async Task<IActionResult> GetAsync([FromRoute] Guid id)
         {
             try
             {
                 var result = await _productRepository.GetAsync(id);
                 if (result == null)
-                    return new BadRequestObjectResult(new ErrorResponse( HttpContext.TraceIdentifier));
+                    return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
 
                 return new OkObjectResult(result);
             }
@@ -66,7 +65,7 @@ namespace Products.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] Product product)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] Product product)
         {
             try
             {
@@ -78,70 +77,101 @@ namespace Products.Api.Controllers
             {
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
-            /*var orig = new Product(id)
-            {
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                DeliveryPrice = product.DeliveryPrice
-            };
 
-            if (!orig.IsNew)
-                orig.Save();
-
-            await Task.FromResult(true);
-
-            return new OkResult();*/
         }
 
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
         {
-            var product = new Product(id);
-            product.Delete();
+            try
+            {
+                await _productRepository.DeleteAsync(id, HttpContext.TraceIdentifier);
+
+                return new OkResult();
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
 
         [HttpGet("{productId}/options")]
-        public ProductOptions GetOptions(Guid productId)
+        public async Task<IActionResult> GetOptionsAsync([FromRoute] Guid productId)
         {
-            return new ProductOptions(productId);
+            try
+            {
+                var options = await _productRepository.GetOptionsAsync(productId, HttpContext.TraceIdentifier);
+                if (options == null)
+                    return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+
+                return new OkObjectResult(options);
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
 
         [HttpGet("{productId}/options/{id}")]
-        public ProductOption GetOption(Guid productId, Guid id)
+        public async Task<IActionResult> GetOptionAsync([FromRoute] Guid productId, [FromRoute] Guid id)
         {
-            var option = new ProductOption(id);
-            if (option.IsNew)
-                throw new Exception();
+            try
+            {
+                var option = await _productRepository.GetOptionAsync(productId, id, HttpContext.TraceIdentifier);
+                if (option == null)
+                    return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
 
-            return option;
+                return new OkObjectResult(option);
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
 
         [HttpPost("{productId}/options")]
-        public void CreateOption(Guid productId, ProductOption option)
+        public async Task<IActionResult> CreateOptionAsync([FromRoute] Guid productId, [FromBody] ProductOption option)
         {
-            option.ProductId = productId;
-            option.Save();
+            try
+            {
+                await _productRepository.AddAsync(productId, option, HttpContext.TraceIdentifier);
+
+                return new OkResult();
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
 
         [HttpPut("{productId}/options/{id}")]
-        public void UpdateOption(Guid id, ProductOption option)
+        public async Task<IActionResult> UpdateOptionAsync([FromRoute] Guid productId, [FromRoute] Guid id, [FromRoute] ProductOption option)
         {
-            var orig = new ProductOption(id)
+            try
             {
-                Name = option.Name,
-                Description = option.Description
-            };
+                await _productRepository.UpdateAsync(productId, id, option, HttpContext.TraceIdentifier);
 
-            if (!orig.IsNew)
-                orig.Save();
+                return new OkResult();
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
 
         [HttpDelete("{productId}/options/{id}")]
-        public void DeleteOption(Guid id)
+        public async Task<IActionResult> DeleteOptionAsync([FromRoute] Guid productId, [FromRoute] Guid id)
         {
-            var opt = new ProductOption(id);
-            opt.Delete();
+            try
+            {
+                await _productRepository.DeleteAsync(productId, id, HttpContext.TraceIdentifier);
+
+                return new OkResult();
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+            }
         }
     }
 }

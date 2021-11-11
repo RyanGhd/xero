@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Products.Api.TestFacilities;
 using Xunit;
-
+// ReSharper disable InconsistentNaming
 namespace Products.Api.Data.ProductRepository_Tests
 {
     public class When_getting_data
@@ -24,7 +24,7 @@ namespace Products.Api.Data.ProductRepository_Tests
         }
 
         [Fact]
-        public async Task Service_can_read_one_product_by_Id_from_db()
+        public async Task Service_can_read_one_product_using_Id_from_db()
         {
             // arrange 
             var sut = _fixture.Start().Build();
@@ -35,6 +35,26 @@ namespace Products.Api.Data.ProductRepository_Tests
 
             // assert
             Assert.Equal(id, result.Id);
+        }
+
+        [Fact]
+        public async Task Service_can_read_options_related_to_a_specific_product_using_Id_from_db()
+        {
+            throw new NotImplementedException();
+        } 
+        
+        [Fact]
+        public async Task Service_can_read_one_option_related_to_a_specific_product_using_option_Id_from_db()
+        {
+            throw new NotImplementedException();
+        } 
+
+        [Fact]
+        public async Task Service_throws_bad_request_if_the_requested_option_using_option_Id_does_not_belong_to_the_product()
+        {
+
+            // use productId and Id
+            throw new NotImplementedException();
         }
     }
 }

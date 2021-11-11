@@ -9,8 +9,17 @@ namespace Products.Api.Data
     {
         Task<Models.Products> GetAsync();
         Task<Models.Product> GetAsync(Guid Id);
+        Task<Models.ProductOptions> GetOptionsAsync(Guid Id, string trackId);
+        Task<Models.ProductOption> GetOptionAsync(Guid productId, Guid id, string trackId);
+
         Task AddAsync(Product product, string trackId);
+        Task AddAsync(Guid productId, ProductOption option, string trackId);
+
         Task UpdateAsync(Guid id, Product product, string trackId);
+        Task UpdateAsync(Guid productId, Guid id, ProductOption option, string trackId);
+
+        Task DeleteAsync(Guid id, string trackId);
+        Task DeleteAsync(Guid productId, Guid id, string trackId);
     }
 
     public class ProductRepository : IProductRepository
@@ -41,6 +50,44 @@ namespace Products.Api.Data
             throw new NotImplementedException();
         }
 
+        public Task<ProductOptions> GetOptionsAsync(Guid Id, string trackId)
+        {
+            /*Items = new List<ProductOption>();
+                        var conn = Helpers.NewConnection();
+                        conn.Open();
+                        var cmd = conn.CreateCommand();
+
+                        cmd.CommandText = $"select id from productoptions {where}";
+
+                        var rdr = cmd.ExecuteReader();
+                        while (rdr.Read())
+                        {
+                            var id = Guid.Parse(rdr.GetString(0));
+                            Items.Add(new ProductOption(id));
+                        }*/
+            throw new NotImplementedException();
+        }
+
+        public Task<ProductOption> GetOptionAsync(Guid productId, Guid id, string trackId)
+        {
+            /*var conn = Helpers.NewConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+
+            cmd.CommandText = $"select * from productoptions where id = '{id}' collate nocase";
+
+            var rdr = cmd.ExecuteReader();
+            if (!rdr.Read())
+                return;
+
+            Id = Guid.Parse(rdr["Id"].ToString());
+            ProductId = Guid.Parse(rdr["ProductId"].ToString());
+            Name = rdr["Name"].ToString();
+            Description = (DBNull.Value == rdr["Description"]) ? null : rdr["Description"].ToString();*/
+
+            throw new NotImplementedException();
+        }
+
         public Task AddAsync(Product product, string trackId)
         { /*
            var conn = Helpers.NewConnection();
@@ -57,7 +104,42 @@ namespace Products.Api.Data
             throw new NotImplementedException();
         }
 
+        public Task AddAsync(Guid productId, ProductOption option, string trackId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task UpdateAsync(Guid id, Product product, string trackId)
+        {
+            /*var orig = new Product(id)
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                DeliveryPrice = product.DeliveryPrice
+            };
+
+            if (!orig.IsNew)
+                orig.Save();
+
+            await Task.FromResult(true);
+
+            return new OkResult();*/
+
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Guid productId, Guid id, ProductOption option, string trackId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Guid id, string trackId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Guid productId, Guid id, string trackId)
         {
             throw new NotImplementedException();
         }

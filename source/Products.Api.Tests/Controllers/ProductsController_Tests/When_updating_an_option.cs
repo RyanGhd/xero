@@ -8,19 +8,19 @@ using Xunit;
 namespace Products.Api.Controllers.ProductsController_Tests
 {
     // ReSharper disable once InconsistentNaming
-    public class When_updating_a_product
+    public class When_updating_an_option
     {
         private readonly ProductsControllerTestFixture _fixture = new ProductsControllerTestFixture();
 
         [Fact]
-        public async Task Service_updates_the_products_if_it_exists()
+        public async Task Service_updates_the_option_if_it_exists()
         {
             // arrange 
             var sut = _fixture.Start().Build();
-            var product = _fixture.GetProduct();
+            var inputOption = _fixture.GetOption();
 
             // act
-            var result = (OkResult)await sut.UpdateAsync(product.Id, product);
+            var result = (OkResult)await sut.UpdateOptionAsync(inputOption.ProductId,inputOption.Id,inputOption);
 
             // assert
             Assert.Equal(200, result.StatusCode);
@@ -31,10 +31,10 @@ namespace Products.Api.Controllers.ProductsController_Tests
         {
             // arrange 
             var sut = _fixture.Start().WithSetupForUpdate(new BadRequestException("Error", null, "111")).Build();
-            var product = _fixture.GetProduct();
+            var inputOption = _fixture.GetOption();
 
             // act
-            var result = (BadRequestObjectResult)await sut.UpdateAsync(product.Id, product);
+            var result = (BadRequestObjectResult)await sut.UpdateOptionAsync(inputOption.ProductId, inputOption.Id, inputOption);
 
             // assert
             Assert.Equal(400, result.StatusCode);

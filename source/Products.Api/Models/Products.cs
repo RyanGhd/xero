@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Products.Api.Models
@@ -45,31 +46,21 @@ namespace Products.Api.Models
     {
         public List<ProductOption> Items { get; private set; }
 
-        public ProductOptions()
+        public ProductOptions(IEnumerable<ProductOption> items)
         {
-            LoadProductOptions(null);
+            Items = items?.ToList() ?? new List<ProductOption>();
         }
 
         public ProductOptions(Guid productId)
         {
             LoadProductOptions($"where productid = '{productId}' collate nocase");
+
+            throw new NotImplementedException("remove this");
         }
 
         private void LoadProductOptions(string where)
         {
-            Items = new List<ProductOption>();
-            var conn = Helpers.NewConnection();
-            conn.Open();
-            var cmd = conn.CreateCommand();
-
-            cmd.CommandText = $"select id from productoptions {where}";
-
-            var rdr = cmd.ExecuteReader();
-            while (rdr.Read())
-            {
-                var id = Guid.Parse(rdr.GetString(0));
-                Items.Add(new ProductOption(id));
-            }
+            throw new NotImplementedException("remove this");
         }
     }
 
@@ -83,37 +74,22 @@ namespace Products.Api.Models
 
         public string Description { get; set; }
 
-        [JsonIgnore] public bool IsNew { get; }
-
-        public ProductOption()
+        public ProductOption(Guid id, Guid productId, string name, string description)
         {
-            Id = Guid.NewGuid();
-            IsNew = true;
+            Id = id;
+            ProductId = productId;
+            Name = name;
+            Description = description;
         }
 
         public ProductOption(Guid id)
         {
-            IsNew = true;
-            var conn = Helpers.NewConnection();
-            conn.Open();
-            var cmd = conn.CreateCommand();
-
-            cmd.CommandText = $"select * from productoptions where id = '{id}' collate nocase";
-
-            var rdr = cmd.ExecuteReader();
-            if (!rdr.Read())
-                return;
-
-            IsNew = false;
-            Id = Guid.Parse(rdr["Id"].ToString());
-            ProductId = Guid.Parse(rdr["ProductId"].ToString());
-            Name = rdr["Name"].ToString();
-            Description = (DBNull.Value == rdr["Description"]) ? null : rdr["Description"].ToString();
+           
         }
 
         public void Save()
         {
-            var conn = Helpers.NewConnection();
+            /*var conn = Helpers.NewConnection();
             conn.Open();
             var cmd = conn.CreateCommand();
 
@@ -121,7 +97,9 @@ namespace Products.Api.Models
                 ? $"insert into productoptions (id, productid, name, description) values ('{Id}', '{ProductId}', '{Name}', '{Description}')"
                 : $"update productoptions set name = '{Name}', description = '{Description}' where id = '{Id}' collate nocase";
 
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQuery();*/
+
+            throw new NotImplementedException();
         }
 
         public void Delete()

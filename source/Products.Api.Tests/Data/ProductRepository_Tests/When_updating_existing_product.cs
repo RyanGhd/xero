@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Xunit;
-
+// ReSharper disable InconsistentNaming
 namespace Products.Api.Data.ProductRepository_Tests
 {
     public class When_updating_existing_product
