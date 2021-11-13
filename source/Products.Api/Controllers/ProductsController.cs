@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Products.Api.Data;
 using Products.Api.Models;
 using Products.Api.Models.Exceptions;
@@ -11,10 +12,12 @@ namespace Products.Api.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, ILogger<ProductsController> _logger)
         {
             _productRepository = productRepository;
+            this._logger = _logger;
         }
 
         [HttpGet]
@@ -28,6 +31,7 @@ namespace Products.Api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }
@@ -39,12 +43,17 @@ namespace Products.Api.Controllers
             {
                 var result = await _productRepository.GetAsync(id);
                 if (result == null)
+                {
+                    _logger.LogError($"Product does not exist. trackId: {HttpContext.TraceIdentifier}");
+
                     return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+                }
 
                 return new OkObjectResult(result);
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }
@@ -60,6 +69,7 @@ namespace Products.Api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }
@@ -75,6 +85,7 @@ namespace Products.Api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
 
@@ -91,6 +102,7 @@ namespace Products.Api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }
@@ -102,12 +114,17 @@ namespace Products.Api.Controllers
             {
                 var options = await _productRepository.GetOptionsAsync(productId, HttpContext.TraceIdentifier);
                 if (options == null)
+                {
+                    _logger.LogError($"Option does not exist. trackId: {HttpContext.TraceIdentifier}");
+
                     return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+                }
 
                 return new OkObjectResult(options);
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }
@@ -119,12 +136,17 @@ namespace Products.Api.Controllers
             {
                 var option = await _productRepository.GetOptionAsync(productId, id, HttpContext.TraceIdentifier);
                 if (option == null)
+                {
+                    _logger.LogError($"Option does not exist. trackId: {HttpContext.TraceIdentifier}");
+
                     return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
+                }
 
                 return new OkObjectResult(option);
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }
@@ -140,6 +162,7 @@ namespace Products.Api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }
@@ -155,6 +178,7 @@ namespace Products.Api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }
@@ -170,6 +194,7 @@ namespace Products.Api.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e, null);
                 return new BadRequestObjectResult(new ErrorResponse(HttpContext.TraceIdentifier));
             }
         }

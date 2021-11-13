@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using HttpContextMoq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Products.Api.Controllers;
 using Products.Api.Data;
@@ -17,6 +19,7 @@ namespace Products.Api.TestFacilities
 
         private HttpContextMock HttpContextMock { get; set; }
         private Mock<IProductRepository> ProductRepositoryMock { get; set; }
+        private ILogger<ProductsController> Logger { get; set; }
 
         public ProductsControllerTestFixture Start()
         {
@@ -24,7 +27,7 @@ namespace Products.Api.TestFacilities
             HttpContextMock.Mock.Setup(c => c.TraceIdentifier).Returns(Guid.NewGuid().ToString);
 
             ProductRepositoryMock = new Mock<IProductRepository>();
-
+            Logger = new NullLogger<ProductsController>();
 
             return this;
         }
@@ -125,7 +128,7 @@ namespace Products.Api.TestFacilities
 
         public ProductsController Build()
         {
-            var sut = new ProductsController(ProductRepositoryMock.Object);
+            var sut = new ProductsController(ProductRepositoryMock.Object, Logger);
             sut.ControllerContext.HttpContext = HttpContextMock.Mock.Object;
 
             return sut;

@@ -21,10 +21,10 @@ namespace Products.Api.Controllers.ProductsController_Tests
             var inputOption = _fixture.GetOption();
 
             // act
-            var result = (OkResult) await sut.CreateOptionAsync(inputOption.ProductId,inputOption);
+            var result = (OkResult)await sut.CreateOptionAsync(inputOption.ProductId, inputOption);
 
             // assert
-            Assert.Equal(200,result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
         }
 
         [Fact]
@@ -32,13 +32,13 @@ namespace Products.Api.Controllers.ProductsController_Tests
         {
             // arrange 
             var sut = _fixture.Start().WithSetupForAdd(new BadRequestException("111")).Build();
-            var product = _fixture.GetProduct();
+            var option = _fixture.GetOption();
 
             // act
-            var result = (BadRequestObjectResult) await sut.PostAsync(product);
+            var result = (BadRequestObjectResult)await sut.CreateOptionAsync(option.ProductId, option);
 
             // assert
-            Assert.Equal(400,result.StatusCode);
+            Assert.Equal(400, result.StatusCode);
             Assert.NotNull(((ErrorResponse)result.Value).ErrorMessage);
         }
     }

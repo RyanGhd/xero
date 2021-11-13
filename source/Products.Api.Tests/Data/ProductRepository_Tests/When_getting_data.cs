@@ -53,6 +53,20 @@ namespace Products.Api.Data.ProductRepository_Tests
             Assert.NotEmpty(result.Items);
             result.Items.ForEach(r => Assert.Equal(productId, r.ProductId));
         }
+        
+        [Fact]
+        public async Task Service_returns_null_if_there_is_no_option_available_for_the_product()
+        {
+            // arrange 
+            var sut = _fixture.Build();
+            
+            // act
+            var result = await sut.GetOptionsAsync(Guid.NewGuid(), "1");
+
+            // assert
+            Assert.Null(result);
+
+        }
 
         [Fact]
         public async Task Service_can_read_one_option_related_to_a_specific_product_using_option_Id_from_db()
