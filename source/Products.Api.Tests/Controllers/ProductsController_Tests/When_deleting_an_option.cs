@@ -30,7 +30,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
         public async Task Service_returns_400_if_it_can_not_delete_the_Option()
         {
             // arrange 
-            var sut = _fixture.Start().WithSetupForDelete(new BadRequestException("Error", null, "111")).Build();
+            var sut = _fixture.Start().WithSetupForDelete(new BadRequestException( "111")).Build();
 
             // act
             var result = (BadRequestObjectResult)await sut.DeleteOptionAsync(Guid.NewGuid(), Guid.NewGuid());

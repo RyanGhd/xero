@@ -16,11 +16,11 @@ namespace Products.Api.Models
             Id = id;
             Name = name;
             Description = description;
-            Price = price;
-            DeliveryPrice = deliveryPrice;
+            Price = Math.Round(price, 2, MidpointRounding.AwayFromZero);
+            DeliveryPrice = Math.Round(deliveryPrice, 2, MidpointRounding.AwayFromZero);
         }
 
-        
+
 
         /*public Product(Guid id)
         {

@@ -30,7 +30,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
         public async Task Service_returns_400_if_an_error_occurs_in_the_update_process()
         {
             // arrange 
-            var sut = _fixture.Start().WithSetupForUpdate(new BadRequestException("Error", null, "111")).Build();
+            var sut = _fixture.Start().WithSetupForUpdate(new BadRequestException("111")).Build();
             var product = _fixture.GetProduct();
 
             // act

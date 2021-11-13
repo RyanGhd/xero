@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Products.Api.Data.Entities;
 using Products.Api.Models;
 
@@ -9,7 +10,7 @@ namespace Products.Api.Data.Mappers
         Product Map(ProductEntity entity);
         ProductEntity Map(Product model);
     }
-    public class ProductToProductEntityMapper: IProductToProductEntityMapper
+    public class ProductToProductEntityMapper : IProductToProductEntityMapper
     {
         public Product Map(ProductEntity entity)
         {

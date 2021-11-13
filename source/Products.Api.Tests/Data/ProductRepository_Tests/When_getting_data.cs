@@ -9,7 +9,7 @@ namespace Products.Api.Data.ProductRepository_Tests
 {
     public class When_getting_data
     {
-        private ProductRepositoryTestFixture _fixture = new ProductRepositoryTestFixture();
+        private readonly ProductRepositoryTestFixture _fixture = new ProductRepositoryTestFixture();
 
         [Fact]
         public async Task Service_can_read_products_from_db()
@@ -46,7 +46,7 @@ namespace Products.Api.Data.ProductRepository_Tests
             var productId = Guid.Parse("8F2E9176-35EE-4F0A-AE55-83023D2DB1A3");
 
             // act
-            var result = await sut.GetOptionsAsync(productId, Guid.NewGuid().ToString());
+            var result = await sut.GetOptionsAsync(productId, "1");
 
             // assert
             Assert.NotNull(result);
@@ -63,7 +63,7 @@ namespace Products.Api.Data.ProductRepository_Tests
             var optionId = Guid.Parse("0643CCF0-AB00-4862-B3C5-40E2731ABCC9");
 
             // act  
-            var result = await sut.GetOptionAsync(productId, optionId, Guid.NewGuid().ToString());
+            var result = await sut.GetOptionAsync(productId, optionId, "1");
 
             // assert
             Assert.NotNull(result);
@@ -80,7 +80,7 @@ namespace Products.Api.Data.ProductRepository_Tests
             var optionId = Guid.Parse("0643CCF0-AB00-4862-B3C5-40E2731ABCC9");
 
             // act & assert
-            await Assert.ThrowsAsync<BadRequestException>(async ()=> await sut.GetOptionAsync(productId, optionId, Guid.NewGuid().ToString()));
+            await Assert.ThrowsAsync<BadRequestException>(async ()=> await sut.GetOptionAsync(productId, optionId, "1"));
         }
     }
 }

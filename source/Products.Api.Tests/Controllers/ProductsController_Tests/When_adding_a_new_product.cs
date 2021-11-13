@@ -30,7 +30,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
         public async Task Service_returns_400_if_it_can_not_add_the_Product()
         {
             // arrange 
-            var sut = _fixture.Start().WithSetupForAdd(new BadRequestException("Error",null,"111")).Build();
+            var sut = _fixture.Start().WithSetupForAdd(new BadRequestException("111")).Build();
             var product = _fixture.GetProduct();
 
             // act

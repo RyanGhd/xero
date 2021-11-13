@@ -44,7 +44,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
 
             // assert
             Assert.Equal(200, result.StatusCode);
-            Assert.Equal(inputProducts.Items.Count(),products.Items.Count());
+            Assert.Equal(inputProducts.Items.Count(), products.Items.Count());
             Assert.True(inputProducts.Items.All(ip => products.Items.Any(p => p.Id == ip.Id)));
         }
 
@@ -52,7 +52,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
         public async Task Service_returns_400_if_an_error_happens()
         {
             // arrange 
-            var sut = _fixture.Start().WithSetupForGet(new BadRequestException("Error", null, "111")).Build();
+            var sut = _fixture.Start().WithSetupForGet(new BadRequestException("111")).Build();
 
             // act
             var result = (BadRequestObjectResult)await sut.GetAsync();

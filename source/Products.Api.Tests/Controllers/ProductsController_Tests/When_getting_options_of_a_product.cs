@@ -52,7 +52,7 @@ namespace Products.Api.Controllers.ProductsController_Tests
         public async Task Service_returns_400_if_an_error_happens()
         {
             // arrange 
-            var sut = _fixture.Start().WithSetupForGetOptions(new BadRequestException("Error", null, "111")).Build();
+            var sut = _fixture.Start().WithSetupForGetOptions(new BadRequestException("111")).Build();
 
             // act
             var result = (BadRequestObjectResult)await sut.GetOptionsAsync(Guid.NewGuid());
